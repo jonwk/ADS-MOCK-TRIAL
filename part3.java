@@ -15,16 +15,15 @@ import java.util.TreeMap;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.xml.crypto.Data;
 
 import java.awt.event.*;
 import java.awt.*;
 
-
 public class part3 {
 
-    
     public static String[] getColumnNames(File filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String st;
@@ -159,6 +158,26 @@ public class part3 {
 
     }
 
+    // Bubbble sort
+    public static String[][] sortTripsBasedOnID(String[][] tripsData) {
+        boolean sorted = false;
+        String[] temp;
+        while (!sorted) {
+            sorted = true;
+            for (int i = 0; i < tripsData.length - 1; i++) {
+                int int_i = Integer.parseInt(tripsData[i][0]);
+                int int_i_1 = Integer.parseInt(tripsData[i + 1][0]);
+                if (int_i > int_i_1) {
+                    temp = tripsData[i];
+                    tripsData[i] = tripsData[i + 1];
+                    tripsData[i + 1] = temp;
+                    sorted = false;
+                }
+            }
+        }
+        return tripsData;
+    }
+
     public static void Part_3_GUI() throws IOException {
 
         File stop_times = new File("inputs/stop_times.txt");
@@ -172,6 +191,19 @@ public class part3 {
 
         DefaultTableModel dtm = new DefaultTableModel(tableData, columnLabels);
         JTable table = new JTable(dtm);
+        // table.getTableHeader().setOpaque(false);
+        // table.getTableHeader().setBackground(Color.blue);
+
+        JTableHeader header = table.getTableHeader();
+        String fg_color = "#ffffff";
+        String bg_color = "#000000";
+        header.setBackground(Color.decode(bg_color));
+        header.setForeground(Color.decode(fg_color));
+
+        table.setShowHorizontalLines(false);
+        table.setShowVerticalLines(true);
+        table.setGridColor(Color.decode(bg_color));
+
         JScrollPane scrollPane = new JScrollPane(table);
         // JScrollBar vScroll = scrollPane.getVerticalScrollBar();
         table.setLayout(new BorderLayout());
@@ -181,9 +213,9 @@ public class part3 {
         Dimension d = new Dimension(800, N_ROWS * table.getRowHeight());
         table.setPreferredScrollableViewportSize(d);
         TableColumn column = null;
-        column = table.getColumnModel().getColumn(0);
-        column.setPreferredWidth(columnLabels[0].length() * 15);
-        for (int i = 1; i < columnLabels.length; i++) {
+        // column = table.getColumnModel().getColumn(0);
+        // column.setPreferredWidth(columnLabels[0].length() * 10);
+        for (int i = 0; i < columnLabels.length; i++) {
             column = table.getColumnModel().getColumn(i);
             column.setPreferredWidth(columnLabels[i].length() * 10);
         }
@@ -192,16 +224,14 @@ public class part3 {
             dtm.addRow(tableData[i]);
         }
 
-        // JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         f.add(scrollPane, BorderLayout.CENTER);
         f.pack();
         f.setLocationRelativeTo(null);
-        // f.setVisible(true);
 
         JButton b = new JButton("Show");
-        b.setBounds(325, 300, 90, 20);
+        b.setBounds(625, 300, 90, 20);
 
         String hours[] = { "  0", "  1", "  2", "  3", "  4", "  5", "  6", "  7", "  8", "  9", " 10", " 11", " 12",
                 " 13", " 14", " 15", " 16", " 17", " 18", " 19", " 20", " 21", " 22", " 23" };
@@ -211,35 +241,51 @@ public class part3 {
                 "31", "32", "33", "34", "35", "36", "37", "38", "39", "40", "41", "42", "43", "44", "45", "46", "47",
                 "48", "49", "50", "51", "52", "53", "54", "55", "56", "57", "58", "59" };
 
+        final JLabel hoursLabel = new JLabel();
+        hoursLabel.setBounds(45, 300, 90, 20);
+        hoursLabel.setText("Hours");
         final JComboBox hoursInput = new JComboBox(hours);
-        hoursInput.setBounds(25, 300, 90, 20);
+        hoursInput.setBounds(85, 300, 90, 20);
 
+        final JLabel minutesLabel = new JLabel();
+        minutesLabel.setBounds(235, 300, 90, 20);
+        minutesLabel.setText("Minutes");
         final JComboBox minutesInput = new JComboBox(minutes_seconds);
-        minutesInput.setBounds(125, 300, 90, 20);
+        minutesInput.setBounds(285, 300, 90, 20);
 
+        final JLabel secondsLabel = new JLabel();
+        secondsLabel.setBounds(435, 300, 90, 20);
+        secondsLabel.setText("Seconds");
         final JComboBox secondsInput = new JComboBox(minutes_seconds);
-        secondsInput.setBounds(225, 300, 90, 20);
+        secondsInput.setBounds(485, 300, 90, 20);
+
+        f.add(hoursLabel);
+        f.add(minutesLabel);
+        f.add(secondsLabel);
 
         f.add(hoursInput);
         f.add(minutesInput);
         f.add(secondsInput);
 
         final JLabel label = new JLabel();
-        label.setHorizontalAlignment(JLabel.CENTER);
+        // label.setHorizontalAlignment(JLabel.CENTER);
+        // label.setVerticalAlignment(JLabel.CENTER);
+        label.setBounds(300,-35,100, 20);
         label.setSize(500, 500);
 
         final JLabel count_label = new JLabel();
-        count_label.setHorizontalAlignment(JLabel.CENTER);
-        count_label.setSize(500, 550);
+        count_label.setBounds(250,-15,100, 20);
+        // count_label.setHorizontalAlignment(f.CENTER);
+        // count_label.setVerticalAlignment(JLabel.CENTER);
+        count_label.setSize(500,550);
 
         f.add(label);
         f.add(count_label);
 
         f.add(b);
 
-
         f.setLayout(null);
-        f.setSize(800, 600);
+        f.setSize(820, 600);
         f.setVisible(true);
 
         b.addActionListener(new ActionListener() {
@@ -275,9 +321,10 @@ public class part3 {
                         }
                     }
                     int busesCount = tripsData.length;
-                    count_label.setText("There seem to be "+busesCount+" buses arriving at "+time);
+                    count_label.setText("There seem to be " + busesCount + " buses arriving at " + time);
+                    tripsData = sortTripsBasedOnID(tripsData); // sorting trips based on their id using bubble sort for
+                                                               // this
                     dtm.setDataVector(tripsData, columnLabels);
-                    // System.out.println("-------endline-------");
                 } catch (NullPointerException np) {
                     String errorMessage = "Sorry, There doesn't seem to be any buses at the time you have selected";
                     count_label.setText(errorMessage);
