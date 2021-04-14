@@ -21,12 +21,10 @@ import javax.xml.crypto.Data;
 import java.awt.event.*;
 import java.awt.*;
 
-/**
- * firstfile
- */
 
-public class firstfile {
+public class part3 {
 
+    
     public static String[] getColumnNames(File filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String st;
