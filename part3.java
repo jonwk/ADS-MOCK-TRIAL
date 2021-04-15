@@ -17,10 +17,42 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
 import javax.xml.crypto.Data;
 
 import java.awt.event.*;
 import java.awt.*;
+
+// taken from https://www.tutorialspoint.com/how-to-set-a-tooltip-to-each-column-of-a-jtableheader-in-java
+// implementation code to set a tooltip text to each column of JTableHeader
+class ToolTipHeader extends JTableHeader {
+    String[] toolTips;
+
+    public ToolTipHeader(TableColumnModel model) {
+        super(model);
+    }
+
+    public String getToolTipText(MouseEvent e) {
+        int col = columnAtPoint(e.getPoint());
+        int modelCol = getTable().convertColumnIndexToModel(col);
+        String retStr;
+        try {
+            retStr = toolTips[modelCol];
+        } catch (NullPointerException ex) {
+            retStr = "";
+        } catch (ArrayIndexOutOfBoundsException ex) {
+            retStr = "";
+        }
+        if (retStr.length() < 1) {
+            retStr = super.getToolTipText(e);
+        }
+        return retStr;
+    }
+
+    public void setToolTipStrings(String[] toolTips) {
+        this.toolTips = toolTips;
+    }
+}
 
 public class part3 {
 
@@ -191,6 +223,13 @@ public class part3 {
 
         DefaultTableModel dtm = new DefaultTableModel(tableData, columnLabels);
         JTable table = new JTable(dtm);
+
+        // taken from
+        // https://www.tutorialspoint.com/how-to-set-a-tooltip-to-each-column-of-a-jtableheader-in-java
+        // to get the label name when hovered on
+        ToolTipHeader tooltipHeader = new ToolTipHeader(table.getColumnModel());
+        tooltipHeader.setToolTipStrings(columnLabels);
+        table.setTableHeader(tooltipHeader);
         // table.getTableHeader().setOpaque(false);
         // table.getTableHeader().setBackground(Color.blue);
 
@@ -268,16 +307,19 @@ public class part3 {
         f.add(secondsInput);
 
         final JLabel label = new JLabel();
-        // label.setHorizontalAlignment(JLabel.CENTER);
-        // label.setVerticalAlignment(JLabel.CENTER);
-        label.setBounds(300,-35,100, 20);
-        label.setSize(500, 500);
+        label.setHorizontalAlignment(JLabel.CENTER);
+        label.setVerticalAlignment(JLabel.CENTER);
+        // label.crossVerticalAlignment(JLabel.CENTER);s
+        // label.setBounds(300, -35, 100, 20);
+
+        label.setSize(table.getWidth(), table.getHeight() * 135 / 100);
+        // f.add(label,BorderLayout.CENTER);
 
         final JLabel count_label = new JLabel();
-        count_label.setBounds(250,-15,100, 20);
-        // count_label.setHorizontalAlignment(f.CENTER);
-        // count_label.setVerticalAlignment(JLabel.CENTER);
-        count_label.setSize(500,550);
+        // count_label.setBounds(250, -15, 100, 20);
+        count_label.setHorizontalAlignment(JLabel.CENTER);
+        count_label.setVerticalAlignment(JLabel.CENTER);
+        count_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
 
         f.add(label);
         f.add(count_label);
@@ -327,9 +369,13 @@ public class part3 {
                     dtm.setDataVector(tripsData, columnLabels);
                 } catch (NullPointerException np) {
                     String errorMessage = "Sorry, There doesn't seem to be any buses at the time you have selected";
+                    count_label.setHorizontalAlignment(JLabel.CENTER);
+                    // count_label.alignCenter();
                     count_label.setText(errorMessage);
                     System.out.println(errorMessage);
-                    dtm.setDataVector(null, columnLabels);
+                    // dtm.setDataVector(null, columnLabels);
+                    String[][] emptyData = new String[10][columnLabels.length];
+                    dtm.setDataVector(emptyData, columnLabels);
                 }
 
             }
