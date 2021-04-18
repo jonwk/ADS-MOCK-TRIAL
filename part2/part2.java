@@ -5,6 +5,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 
 public class part2 {
     public static String[] getColumnNames(File filename) throws IOException {
@@ -41,11 +45,49 @@ public class part2 {
         ArrayList<String> stopNames = new ArrayList<String>();
         while ((st = br.readLine()) != null) {
             String[] line = st.split(",");
-            String meaningfulName = makeMeaningful(line[2]);
-            stopNames.add(meaningfulName);
+            if (!line[2].equals("stop_name")) {
+                String meaningfulName = makeMeaningful(line[2]);
+                stopNames.add(meaningfulName);
+            }
         }
         br.close();
         return stopNames;
+    }
+
+    public static void printDuplicateStations(ArrayList<String> stopNames) {
+        ArrayList<String> stopNamesUniques = new ArrayList<String>();
+        int duplicateCount = 0;
+        System.out.println("------- Duplicate Stop Names -------");
+        for (String x : stopNames) {
+            if (stopNamesUniques.contains(x)) {
+                duplicateCount++;
+                System.out.println(duplicateCount + " " + x);
+            } else
+                stopNamesUniques.add(x);
+        }
+
+        System.out.println("Stops count - " + stopNames.size());
+        System.out.println("Unique Stops count - " + stopNamesUniques.size());
+    }
+
+    public static Map<String, ArrayList<String>> createNameDetailsMap(File filename) throws IOException {
+
+        int indexOfStopName = 2;
+        Map<String, ArrayList<String>> Time_Line = new TreeMap<>();
+
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String st;
+
+        while ((st = br.readLine()) != null) {
+            String[] line = st.split(",");
+            if (!line[indexOfStopName].equals("stop_name")) {
+                String meaningfulName = makeMeaningful(line[indexOfStopName]);
+                Time_Line.computeIfAbsent(meaningfulName, k -> new ArrayList<>()).add(st);
+                // stopNames.add(meaningfulName);
+            }
+        }
+        br.close();
+        return Time_Line;
     }
 
     public static void main(String[] args) throws IOException {
@@ -54,11 +96,14 @@ public class part2 {
 
         ArrayList<String> stopNames = getStopNames(stops);
 
+        // printDuplicateStations(stopNames);
+
         // System.out.println(Arrays.toString(stops_column_names));
 
-        for (String x : stopNames) {
-        System.out.println(x);
-        }
+        Map<String, ArrayList<String>> stopDetails = createNameDetailsMap(stops);
+
+        // Set<String> uniqueStops = new HashSet<String>(stopNames);
+        // System.out.println("Unique Stops count: " + uniqueStops.size());
 
     }
 }
