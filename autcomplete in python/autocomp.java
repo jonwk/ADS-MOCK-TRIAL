@@ -116,6 +116,11 @@ class TernarySearchTree {
         return sb.toString();
     }
 
+    public String[] getSearchResults(String word){
+        String search_SB = search(word);
+        String[] searchArr = search_SB.split("\n");
+        return searchArr;
+    }
     /** function to print tree **/
     public String toString() {
         al = new ArrayList<String>();
@@ -159,7 +164,13 @@ class TernarySearchTree {
             findAllSuggestions(r.left, s, sb, word);
             s = s + r.data;
             if (r.isEnd) {
-                sb.append(word + s.substring(1) + "\n");
+                if (word.length() == 1) {
+                    if (word.equals(s.substring(0, 1)))
+                        sb.append(word + s.substring(1) + "\n");
+                }
+                else
+                    sb.append(word + s.substring(1) + "\n");
+
             }
             findAllSuggestions(r.middle, s, sb, word);
             s = s.substring(0, s.length() - 1);
@@ -183,11 +194,52 @@ public class autocomp {
         System.out.println("Testing to search Hell\n"+TST.search("Hell"));
         System.out.println("Testing to search Hellsing\n"+TST.search("Hellsing"));
         System.out.println("Testing to search He\n"+TST.search("He"));
-        System.out.println("Testing to search K\n"+TST.search("K"));
+        System.out.println("Testing to search H\n"+TST.search("H"));
         // System.out.println("Testing to search with an empty space\n"+TST.search(" "));
-        System.out.println("Testing to search with null\n"+TST.search(""));
+
+        String[] s_arr = TST.getSearchResults("H");
+
+        for(String x : s_arr){
+            System.out.println(x);
+        }
+        System.out.println(s_arr.length);
+        // System.out.println("Testing to search with null\n"+TST.search(""));
         // System.out.println(TT.Contains("Hello"));
         // System.out.println(TT.Contains("Hell"));
         // System.out.println(TT.Contains("Hel"));
     }
 }
+
+// 1 HASTINGS FS CLIFF AVE WB
+// 2 HASTINGS ST FS ALPHA AVE WB
+// 3 HASTINGS ST FS BETA AVE EB
+// 4 HASTINGS ST FS BOUNDARY RD EB
+// 5 HASTINGS ST FS DUTHIE AVE EB
+// 6 HASTINGS ST FS DUTHIE AVE WB
+// 7 HASTINGS ST FS FELL AVE EB
+// 8 HASTINGS ST FS FELL AVE WB
+// 9  HASTINGS ST FS GAMMA AVE WB
+// 10 HASTINGS ST FS GILMORE AVE EB
+// 11HASTINGS ST FS GILMORE AVE WB
+// 12HASTINGS ST FS HOLDOM AVE EB
+// 13HASTINGS ST FS HOLDOM AVE- WB
+// 14HASTINGS ST FS HOLDOM AVE-- WB
+// 15HASTINGS ST FS HOWARD AVE EB
+// 16HASTINGS ST FS HOWARD AVE WB
+// 17HASTINGS ST FS HYTHE AVE EB
+// 18HASTINGS ST FS HYTHE AVE WB
+// 19HASTINGS ST FS INGLETON AVE EB
+// H20ASTINGS ST FS INGLETON AVE WB
+// 21HASTINGS ST FS INLET DR EB
+// 22HASTINGS ST FS KENSINGTON AVE EB
+// 23HASTINGS ST FS KENSINGTON AVE WB
+// H24ASTINGS ST FS MACDONALD AVE EB
+// 25HASTINGS ST FS MADISON AVE EB
+// 26HASTINGS ST FS MADISON AVE WB
+// 27HASTINGS ST FS SPERLING AVE EB
+// 28HASTINGS ST FS SPERLING AVE WB
+// 29HASTINGS ST FS SPRINGER AVE EB
+// 30HASTINGS ST FS SPRINGER AVE WB
+// 31HASTINGS ST FS WILLINGDON AVE WB
+// 32HASTINGS ST NS ALPHA AVE EB
+// 33HASTINGS ST NS WILLINGDON AVE EB

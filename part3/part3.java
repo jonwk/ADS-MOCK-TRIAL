@@ -211,8 +211,8 @@ public class part3 {
     }
 
     public static void Part_3_GUI() throws IOException {
-
-        File stop_times = new File("inputs/stop_times.txt");
+        String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+        File stop_times = new File(stops_times_path);
         ArrayList<String> validTimes = getValidTimes(stop_times);
         Map<String, ArrayList<String>> arrivalTimes_String = createSortedArrivalTimeMap(validTimes);
 

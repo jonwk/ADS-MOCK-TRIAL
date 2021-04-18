@@ -11,6 +11,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public class part2 {
+
+    public static TernarySearchTree STOP_NAMES_TST = new TernarySearchTree();
+
     public static String[] getColumnNames(File filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String st;
@@ -90,13 +93,28 @@ public class part2 {
         return Time_Line;
     }
 
+    public static void insertStopNamesToTST(ArrayList<String> stopNames) {
+        for (String stopName : stopNames) {
+            STOP_NAMES_TST.insert(stopName);
+        }
+    }
+
     public static void main(String[] args) throws IOException {
-        File stops = new File("inputs/stops.txt");
+        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+        File stops = new File(stops_path);
         String[] stops_column_names = getColumnNames(stops);
 
         ArrayList<String> stopNames = getStopNames(stops);
 
         // printDuplicateStations(stopNames);
+        insertStopNamesToTST(stopNames);
+        String[] HastingsSearch = STOP_NAMES_TST.getSearchResults("HASTINGS");
+        System.out.println(STOP_NAMES_TST.search("HASTINGS"));
+        System.out.println(STOP_NAMES_TST.toString());
+
+        for(String x: HastingsSearch)
+            System.out.println(x);
+        System.out.println("Length"+HastingsSearch.length);
 
         // System.out.println(Arrays.toString(stops_column_names));
 
