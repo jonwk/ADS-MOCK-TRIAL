@@ -92,24 +92,46 @@ public class TernarySearchTree {
     // }
     // }
 
-    public String search(String word) {
-        if(word == null) throw new IllegalArgumentException("you can not search for null");
-        if(word.charAt(0) == ' ') throw new IllegalArgumentException("empty space detected at the start of the string");
+    public String[] search(String word) {
+        String[] emptyArr = new String[0];
+        try {
+            // if(word == null) throw new IllegalArgumentException("you can not search for
+            // null");
+            if (word == null) {
+                return emptyArr;
+            }
+        } catch (Exception e) {
+            System.out.println("Searching for Null");
+        }
+        try {
+            // if (word.charAt(0) == ' ') throw new IllegalArgumentException("empty space
+            // detected at the start of the string");
+            if (word.charAt(0) == ' ') {
+                return emptyArr;
+            }
+
+        } catch (Exception e) {
+            System.out.println("Empty space detected at the start of the string");
+
+        }
+
         StringBuilder sb = new StringBuilder();
 
         TSTNode prefixRoot = crawlToPrefixLastNode(root, word.toCharArray(), 0);
         findAllSuggestions(prefixRoot, "", sb, word);
         if (sb.length() < 1) {
-            return "No Matching String Found";
+            System.out.println("No Matching String Found");
+            return emptyArr;
         }
-        return sb.toString();
+
+        return sb.toString().split("\n");
     }
 
-    public String[] getSearchResults(String word){
-        String search_SB = search(word);
-        String[] searchArr = search_SB.split("\n");
-        return searchArr;
-    }
+    // public String[] getSearchResults(String word) {
+    // String search_SB = search(word);
+    // String[] searchArr = search_SB.split("\n");
+    // return searchArr;
+    // }
 
     /** function to print tree **/
     public String toString() {

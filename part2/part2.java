@@ -10,6 +10,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
+
 public class part2 {
 
     public static TernarySearchTree STOP_NAMES_TST = new TernarySearchTree();
@@ -99,6 +102,13 @@ public class part2 {
         }
     }
 
+    public static void part2GUI(String[] stop_names) {
+        AutoCompleteComboBoxTest cBoxTest = new AutoCompleteComboBoxTest(
+             
+        );
+
+    }
+
     public static void main(String[] args) throws IOException {
         String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
         File stops = new File(stops_path);
@@ -108,17 +118,19 @@ public class part2 {
 
         // printDuplicateStations(stopNames);
         insertStopNamesToTST(stopNames);
-        String[] HastingsSearch = STOP_NAMES_TST.getSearchResults("HASTINGS");
-        System.out.println(STOP_NAMES_TST.search("HASTINGS"));
-        System.out.println(STOP_NAMES_TST.toString());
+        String[] HastingsSearch = STOP_NAMES_TST.search("HASTINGS");
 
-        for(String x: HastingsSearch)
-            System.out.println(x);
-        System.out.println("Length"+HastingsSearch.length);
+        String[] Stop_Names = (String[]) stopNames.toArray();
+        // System.out.println();
+        // System.out.println(STOP_NAMES_TST.toString());
+
+        // for(String x: HastingsSearch)
+        // System.out.println(x);
+        // System.out.println("Length"+HastingsSearch.length);
 
         // System.out.println(Arrays.toString(stops_column_names));
 
-        Map<String, ArrayList<String>> stopDetails = createNameDetailsMap(stops);
+        // Map<String, ArrayList<String>> stopDetails = createNameDetailsMap(stops);
 
         // Set<String> uniqueStops = new HashSet<String>(stopNames);
         // System.out.println("Unique Stops count: " + uniqueStops.size());
