@@ -34,15 +34,26 @@ public class part2 {
     // names of the stops when reading the file into a TST (eg “WB HASTINGS ST FS
     // HOLDOM AVE” becomes “HASTINGS ST FS HOLDOM AVE WB”)
     public static String makeMeaningful(String stopName) {
-        String temp = stopName.substring(2, 3);
-        if (temp.equals(" ")) {
-            String lastPart = stopName.substring(3);
-            String firstPart = stopName.substring(0, 2);
+
+        int normalKeywordLength = 2;
+        int flagtstopLength = 8;
+
+        String temp = stopName.substring(0, normalKeywordLength).strip().toUpperCase();
+        String tempFlagStop = stopName.substring(0, flagtstopLength).strip().toUpperCase();
+
+        if (temp.equals("WB") || temp.equals("NB") || temp.equals("SB") || temp.equals("EB")) {
+            String lastPart = stopName.substring(normalKeywordLength + 1);
+            String firstPart = stopName.substring(0, normalKeywordLength);
             String meaningfulStr = lastPart.concat(" ").concat(firstPart);
-            return meaningfulStr;
+            return makeMeaningful(meaningfulStr);
+        }
+        if (tempFlagStop.equals("FLAGSTOP")) {
+            String lastPart = stopName.substring(flagtstopLength + 1);
+            String firstPart = stopName.substring(0, flagtstopLength);
+            String meaningfulStr = lastPart.concat(" ").concat(firstPart);
+            return makeMeaningful(meaningfulStr);
         } else
             return stopName;
-
     }
 
     public static ArrayList<String> getStopNames(File filename) throws IOException {
@@ -102,12 +113,6 @@ public class part2 {
         }
     }
 
-    public static void part2GUI(String[] stop_names) {
-        AutoCompleteComboBoxTest cBoxTest = new AutoCompleteComboBoxTest(
-             
-        );
-
-    }
 
     public static void main(String[] args) throws IOException {
         String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
@@ -124,9 +129,9 @@ public class part2 {
         // System.out.println();
         // System.out.println(STOP_NAMES_TST.toString());
 
-        // for(String x: HastingsSearch)
-        // System.out.println(x);
-        // System.out.println("Length"+HastingsSearch.length);
+        for(String x: HastingsSearch)
+        System.out.println(x);
+        System.out.println("Length"+HastingsSearch.length);
 
         // System.out.println(Arrays.toString(stops_column_names));
 
