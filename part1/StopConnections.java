@@ -264,7 +264,8 @@ public class StopConnections {
         System.out.println("Enroute Stops");
         for(int stop:stopIDs){
             Stop stopDetails = IdDetailsMap.get(stop);
-            stopDetails.printStopDetails();
+            // stopDetails.printStopDetails();
+            System.out.println("stop_id - "+ stopDetails.stop_id+"\tstop_name - "+stopDetails.stop_name);
             enrouteStopDetails.add(stopDetails);
         }
         return enrouteStopDetails;

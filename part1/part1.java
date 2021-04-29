@@ -31,95 +31,99 @@ public class part1 {
     // 100.
 
     // public static String[] getColumnNames(File filename) throws IOException {
-    //     BufferedReader br = new BufferedReader(new FileReader(filename));
-    //     String st;
-    //     while ((st = br.readLine()) != null) {
-    //         String[] line = st.split(",");
-    //         br.close();
-    //         return line;
-    //     }
-    //     br.close();
-    //     return null;
+    // BufferedReader br = new BufferedReader(new FileReader(filename));
+    // String st;
+    // while ((st = br.readLine()) != null) {
+    // String[] line = st.split(",");
+    // br.close();
+    // return line;
+    // }
+    // br.close();
+    // return null;
     // }
 
     // // prints the lines with a parent station name
     // public static void printIfParent(File filename) throws IOException {
-    //     BufferedReader br = new BufferedReader(new FileReader(filename));
-    //     String st;
-    //     while ((st = br.readLine()) != null) {
-    //         String[] line = st.split(",");
-    //         if (line.length == 10) {
-    //             System.out.println(Arrays.toString(line));
-    //         }
-    //     }
-    //     br.close();
+    // BufferedReader br = new BufferedReader(new FileReader(filename));
+    // String st;
+    // while ((st = br.readLine()) != null) {
+    // String[] line = st.split(",");
+    // if (line.length == 10) {
+    // System.out.println(Arrays.toString(line));
+    // }
+    // }
+    // br.close();
     // }
 
     // // to check if any of the data hsa stop url
     // // spoiler there are none
     // public static void printIfURL(File filename) throws IOException {
-    //     BufferedReader br = new BufferedReader(new FileReader(filename));
-    //     String st;
-    //     // int count = 0;
-    //     while ((st = br.readLine()) != null) {
-    //         String[] line = st.split(",");
-    //         if (!line[7].equals(" ")) {
-    //             // if(line[7].equals(" ")){
-    //             // System.out.println(line[7]);
-    //             System.out.println(Arrays.toString(line));
-    //             // count++;
-    //         }
-    //     }
-    //     // System.out.println("lines without stop url are "+count);
-    //     br.close();
+    // BufferedReader br = new BufferedReader(new FileReader(filename));
+    // String st;
+    // // int count = 0;
+    // while ((st = br.readLine()) != null) {
+    // String[] line = st.split(",");
+    // if (!line[7].equals(" ")) {
+    // // if(line[7].equals(" ")){
+    // // System.out.println(line[7]);
+    // System.out.println(Arrays.toString(line));
+    // // count++;
+    // }
+    // }
+    // // System.out.println("lines without stop url are "+count);
+    // br.close();
     // }
 
-    // public static Map<String, ArrayList<String[]>> makeStringMap(File filename, int keyIndex) throws IOException {
-    //     Map<String, ArrayList<String[]>> map = new HashMap<String, ArrayList<String[]>>();
+    // public static Map<String, ArrayList<String[]>> makeStringMap(File filename,
+    // int keyIndex) throws IOException {
+    // Map<String, ArrayList<String[]>> map = new HashMap<String,
+    // ArrayList<String[]>>();
 
-    //     BufferedReader br = new BufferedReader(new FileReader(filename));
-    //     String st;
-    //     ArrayList<String[]> lineList = new ArrayList<String[]>();
-    //     int lineCount = 0;
-    //     while ((st = br.readLine()) != null) {
-    //         String[] line = st.split(",");
-    //         if (lineCount != 0) {
-    //             lineList.add(line);
-    //         }
-    //         lineCount++;
+    // BufferedReader br = new BufferedReader(new FileReader(filename));
+    // String st;
+    // ArrayList<String[]> lineList = new ArrayList<String[]>();
+    // int lineCount = 0;
+    // while ((st = br.readLine()) != null) {
+    // String[] line = st.split(",");
+    // if (lineCount != 0) {
+    // lineList.add(line);
+    // }
+    // lineCount++;
 
-    //     }
-    //     br.close();
+    // }
+    // br.close();
 
-    //     for (int i = 0; i < lineList.size(); i++) {
-    //         String[] line = lineList.get(i);
-    //         String keyStr = line[keyIndex];
+    // for (int i = 0; i < lineList.size(); i++) {
+    // String[] line = lineList.get(i);
+    // String keyStr = line[keyIndex];
 
-    //         map.computeIfAbsent(keyStr, k -> new ArrayList<>()).add(line);
-    //     }
-
-    //     return map;
+    // map.computeIfAbsent(keyStr, k -> new ArrayList<>()).add(line);
     // }
 
-    // public static Map<String, ArrayList<String[]>> StopIdTripIdMap; // key is trip ID
+    // return map;
+    // }
+
+    // public static Map<String, ArrayList<String[]>> StopIdTripIdMap; // key is
+    // trip ID
 
     // public static void makeEdgeMaps() throws IOException {
-    //     String transfers_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
-    //     File transfers = new File(transfers_path);
-    //     int fromStopIdIndex = 0;
-    //     transfersMap = makeStringMap(transfers, fromStopIdIndex);
+    // String transfers_path = "/Users/johnwesley/Desktop/Algos
+    // /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
+    // File transfers = new File(transfers_path);
+    // int fromStopIdIndex = 0;
+    // transfersMap = makeStringMap(transfers, fromStopIdIndex);
 
-    //     String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
-    //     File stop_times = new File(stops_times_path);
-    //     // makeStringMap(File filename, Map<String, ArrayList<String[]>> map, int
-    //     // keyIndex) throws IOException {
-    //     int tripIdIndex = 0;
-    //     TripIDMap = makeStringMap(stop_times, tripIdIndex);
+    // String stops_times_path = "/Users/johnwesley/Desktop/Algos
+    // /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+    // File stop_times = new File(stops_times_path);
+    // // makeStringMap(File filename, Map<String, ArrayList<String[]>> map, int
+    // // keyIndex) throws IOException {
+    // int tripIdIndex = 0;
+    // TripIDMap = makeStringMap(stop_times, tripIdIndex);
 
-    //     int stopIdIndex = 3;
-    //     StopIdTripIdMap = makeStringMap(stop_times, stopIdIndex);
+    // int stopIdIndex = 3;
+    // StopIdTripIdMap = makeStringMap(stop_times, stopIdIndex);
     // }
-
 
     public static StopConnections routes;
     public static Trips trips;
@@ -142,6 +146,28 @@ public class part1 {
 
     }
 
+    public static void printShortestPathInfo(int fromStopID, int toStopID) {
+        ArrayList<Integer> shortestPath = routes.getShortestPath(fromStopID, toStopID);
+        double shortestCost = routes.getShortestPathCost();
+
+        if (shortestCost == Double.POSITIVE_INFINITY) {
+            System.out.println("No route from from " + fromStopID + " to " + toStopID);
+        } else if (shortestCost == Double.NEGATIVE_INFINITY) {
+            System.out.println("both are same");
+        } else if (shortestCost == -1.0) {
+            System.out.println("Invalid input");
+        } else {
+            System.out.println("Cost from " + fromStopID + " to " + toStopID + " is: " + shortestCost);
+            ArrayList<Stop> details = routes.getEnrouteStops(shortestPath);
+            for(int i = 0; i < shortestPath.size();i++){
+                System.out.print(shortestPath.get(i));
+                if(i != shortestPath.size() - 1){
+                    System.out.print(" -> ");
+                }
+            }
+            System.out.println();
+        }
+    }
 
     public static void main(String[] args) throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
@@ -155,33 +181,9 @@ public class part1 {
 
         setupGraph(stops, stop_times, transfers);
 
-        double[] returnedDistance = new double[1];
-        
         int fromStopID = 71;
-        int toStopID = 646 ;
+        int toStopID = 646;
+        printShortestPathInfo(fromStopID, toStopID);
 
-        
-
-        
-        ArrayList<Integer> pathTaken = routes.getShortestPath(fromStopID, toStopID);
-        double shortestCost = routes.getShortestPathCost();
-
-        if (shortestCost == Double.POSITIVE_INFINITY) {
-            System.out.println("No route from from " + fromStopID + " to " + toStopID);
-        } else if (shortestCost == Double.NEGATIVE_INFINITY) {
-            System.out.println("both are same");
-        } 
-        else if (shortestCost == -1.0) {
-            System.out.println("Invalid input");
-        } 
-        else {
-            System.out.println("Distance from " + fromStopID + " to " + toStopID + " is: " + shortestCost);
-            System.out.print("Path Taken: ");
-            ArrayList<Stop> details = routes.getEnrouteStops(pathTaken);
-            for (Integer i : pathTaken) {
-                System.out.print(i + " -> ");
-            }
-            System.out.println();
-        }
     }
 }
