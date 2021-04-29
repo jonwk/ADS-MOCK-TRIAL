@@ -2,7 +2,12 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class part1 {
 
@@ -25,75 +30,118 @@ public class part1 {
     // * and for transfer type 2 the cost is the minimum transfer time divided by
     // 100.
 
-    public static String[] getColumnNames(File filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String st;
-        while ((st = br.readLine()) != null) {
-            String[] line = st.split(",");
-            br.close();
-            return line;
-        }
-        br.close();
-        return null;
-    }
+    // public static String[] getColumnNames(File filename) throws IOException {
+    //     BufferedReader br = new BufferedReader(new FileReader(filename));
+    //     String st;
+    //     while ((st = br.readLine()) != null) {
+    //         String[] line = st.split(",");
+    //         br.close();
+    //         return line;
+    //     }
+    //     br.close();
+    //     return null;
+    // }
 
-    // prints the lines with a parent station name
-    public static void printIfParent(File filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String st;
-        while ((st = br.readLine()) != null) {
-            String[] line = st.split(",");
-            if (line.length == 10) {
-                System.out.println(Arrays.toString(line));
+    // // prints the lines with a parent station name
+    // public static void printIfParent(File filename) throws IOException {
+    //     BufferedReader br = new BufferedReader(new FileReader(filename));
+    //     String st;
+    //     while ((st = br.readLine()) != null) {
+    //         String[] line = st.split(",");
+    //         if (line.length == 10) {
+    //             System.out.println(Arrays.toString(line));
+    //         }
+    //     }
+    //     br.close();
+    // }
+
+    // // to check if any of the data hsa stop url
+    // // spoiler there are none
+    // public static void printIfURL(File filename) throws IOException {
+    //     BufferedReader br = new BufferedReader(new FileReader(filename));
+    //     String st;
+    //     // int count = 0;
+    //     while ((st = br.readLine()) != null) {
+    //         String[] line = st.split(",");
+    //         if (!line[7].equals(" ")) {
+    //             // if(line[7].equals(" ")){
+    //             // System.out.println(line[7]);
+    //             System.out.println(Arrays.toString(line));
+    //             // count++;
+    //         }
+    //     }
+    //     // System.out.println("lines without stop url are "+count);
+    //     br.close();
+    // }
+
+    // public static Map<String, ArrayList<String[]>> makeStringMap(File filename, int keyIndex) throws IOException {
+    //     Map<String, ArrayList<String[]>> map = new HashMap<String, ArrayList<String[]>>();
+
+    //     BufferedReader br = new BufferedReader(new FileReader(filename));
+    //     String st;
+    //     ArrayList<String[]> lineList = new ArrayList<String[]>();
+    //     int lineCount = 0;
+    //     while ((st = br.readLine()) != null) {
+    //         String[] line = st.split(",");
+    //         if (lineCount != 0) {
+    //             lineList.add(line);
+    //         }
+    //         lineCount++;
+
+    //     }
+    //     br.close();
+
+    //     for (int i = 0; i < lineList.size(); i++) {
+    //         String[] line = lineList.get(i);
+    //         String keyStr = line[keyIndex];
+
+    //         map.computeIfAbsent(keyStr, k -> new ArrayList<>()).add(line);
+    //     }
+
+    //     return map;
+    // }
+
+    // public static Map<String, ArrayList<String[]>> StopIdTripIdMap; // key is trip ID
+
+    // public static void makeEdgeMaps() throws IOException {
+    //     String transfers_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
+    //     File transfers = new File(transfers_path);
+    //     int fromStopIdIndex = 0;
+    //     transfersMap = makeStringMap(transfers, fromStopIdIndex);
+
+    //     String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+    //     File stop_times = new File(stops_times_path);
+    //     // makeStringMap(File filename, Map<String, ArrayList<String[]>> map, int
+    //     // keyIndex) throws IOException {
+    //     int tripIdIndex = 0;
+    //     TripIDMap = makeStringMap(stop_times, tripIdIndex);
+
+    //     int stopIdIndex = 3;
+    //     StopIdTripIdMap = makeStringMap(stop_times, stopIdIndex);
+    // }
+
+
+    public static StopConnections routes;
+    public static Trips trips;
+
+    public static void setupGraph(File stops, File stop_times, File transfers) throws IOException {
+        System.out.println("Setting up Graph");
+
+        routes = new StopConnections(stops, transfers);
+        trips = new Trips(stop_times);
+
+        for (int t = 1; t < trips.validData.size(); t++) {
+            TripDetails trip1 = trips.validData.get(t - 1);
+            TripDetails trip2 = trips.validData.get(t);
+            int cost = 1;
+            if (trip1.trip_id == trip2.trip_id) {
+                routes.makeConnection(trip1.stop_id, trip2.stop_id, cost);
             }
         }
-        br.close();
+        System.out.println("Finishing setting graph");
+
     }
 
-    // to check if any of the data hsa stop url
-    // spoiler there are none
-    public static void printIfURL(File filename) throws IOException {
-        BufferedReader br = new BufferedReader(new FileReader(filename));
-        String st;
-        // int count = 0;
-        while ((st = br.readLine()) != null) {
-            String[] line = st.split(",");
-            if (!line[7].equals(" ")) {
-                // if(line[7].equals(" ")){
-                // System.out.println(line[7]);
-                System.out.println(Arrays.toString(line));
-                // count++;
-            }
-        }
-        // System.out.println("lines without stop url are "+count);
-        br.close();
-    }
-
-    /**
-     * Calculate distance between two points in latitude and longitude taking into
-     * account height difference. If you are not interested in height difference
-     * pass 0.0. Uses Haversine method as its base.
-     * 
-     * lat1, lon1 Start point lat2, lon2 End point el1 Start altitude in meters el2
-     * End altitude in meters
-     * 
-     * @returns Distance in Meters
-     */
-    public static double getDistance(double lat1, double lon1, double lat2, double lon2) {
-
-        final int R = 6371; // Radius of the earth
-
-        double latDistance = Math.toRadians(lat2 - lat1);
-        double lonDistance = Math.toRadians(lon2 - lon1);
-        double a = Math.sin(latDistance / 2) * Math.sin(latDistance / 2) + Math.cos(Math.toRadians(lat1))
-                * Math.cos(Math.toRadians(lat2)) * Math.sin(lonDistance / 2) * Math.sin(lonDistance / 2);
-        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        double distance = R * c * 1000; // convert to meters
-
-        distance = Math.pow(distance, 2);
-
-        return Math.sqrt(distance);
-    }
 
     public static void main(String[] args) throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
@@ -105,18 +153,35 @@ public class part1 {
         String transfers_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
         File transfers = new File(transfers_path);
 
-        String[] stops_column_names = getColumnNames(stops);
-        // System.out.println(Arrays.toString(stops_column_names));
-        // printIfParent(stops);
-        // printIfURL(stops);
+        setupGraph(stops, stop_times, transfers);
 
-        double lat1 = 49.280436;
-        double lon1 = -122.981419;
-        double lat2 = 49.262588;
-        double lon2 = -122.781242;
+        double[] returnedDistance = new double[1];
+        
+        int fromStopID = 71;
+        int toStopID = 646 ;
 
-        double distance = getDistance(lat1, lon1, lat2, lon2);
+        
 
-        System.out.println("Distance between lat1,lon1 and lat2,lon2 - " + distance);
+        
+        ArrayList<Integer> pathTaken = routes.getShortestPath(fromStopID, toStopID);
+        double shortestCost = routes.getShortestPathCost();
+
+        if (shortestCost == Double.POSITIVE_INFINITY) {
+            System.out.println("No route from from " + fromStopID + " to " + toStopID);
+        } else if (shortestCost == Double.NEGATIVE_INFINITY) {
+            System.out.println("both are same");
+        } 
+        else if (shortestCost == -1.0) {
+            System.out.println("Invalid input");
+        } 
+        else {
+            System.out.println("Distance from " + fromStopID + " to " + toStopID + " is: " + shortestCost);
+            System.out.print("Path Taken: ");
+            ArrayList<Stop> details = routes.getEnrouteStops(pathTaken);
+            for (Integer i : pathTaken) {
+                System.out.print(i + " -> ");
+            }
+            System.out.println();
+        }
     }
 }
