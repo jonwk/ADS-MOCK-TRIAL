@@ -23,8 +23,14 @@ import javax.xml.crypto.Data;
 import java.awt.event.*;
 import java.awt.*;
 
-
 public class part3 {
+    // public static String stops_times_path = "/Users/johnwesley/Desktop/Algos
+    // /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+    // public static File stop_times = new File(stops_times_path);
+
+    public part3() {
+
+    };
 
     public static String[] getColumnNames(File filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
@@ -36,6 +42,12 @@ public class part3 {
         }
         br.close();
         return null;
+    }
+
+    public static String[] getColumnNamesFromStopTimes() throws IOException {
+        String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+        File stop_times = new File(stops_times_path);
+        return getColumnNames(stop_times);
     }
 
     public static int getLinesCount(File filename) throws IOException {
@@ -110,7 +122,11 @@ public class part3 {
         return validTimes;
     }
 
-    
+    public static  ArrayList<String> getValidTimesFromStopTimes()throws IOException {
+        String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+        File stop_times = new File(stops_times_path);
+        return getValidTimes(stop_times);
+    }
 
     public static Map<String, ArrayList<String>> createSortedArrivalTimeMap(ArrayList<String> validTimes) {
         int indexOfArrivalTime = 1;
@@ -124,6 +140,10 @@ public class part3 {
             Time_Line.computeIfAbsent(arrivalTime, k -> new ArrayList<>()).add(line);
         }
         return Time_Line;
+    }
+
+    public static Map<String, ArrayList<String>> createSortedArrivalTimeMapFromStopTimes() throws IOException {
+        return createSortedArrivalTimeMap(getValidTimesFromStopTimes());
     }
 
     public static void printTripDetailsFromList(ArrayList<String> list_line) {
@@ -181,6 +201,8 @@ public class part3 {
         }
         return tripsData;
     }
+
+
 
     public static void Part_3_GUI() throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
