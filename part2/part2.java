@@ -125,7 +125,7 @@ public class part2 {
         insertStopNamesToTST(stopNames);
         String[] HastingsSearch = STOP_NAMES_TST.search("HASTINGS");
 
-        String[] Stop_Names = (String[]) stopNames.toArray();
+        // String[] Stop_Names = (String[]) stopNames.toArray();
         // System.out.println();
         // System.out.println(STOP_NAMES_TST.toString());
 

@@ -211,7 +211,7 @@ public class part4 extends JFrame {
             pd.add(buttonBackD);
 
             pd.add(count_label);
-            pd.add(label);
+            // pd.add(label);
 
             // pd.add(label4);
             return pd;
