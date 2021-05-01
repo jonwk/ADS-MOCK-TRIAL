@@ -6,11 +6,15 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.image.BufferedImage;
+
+import java.io.File;
 
 public class part4 extends JFrame {
 
@@ -32,6 +36,206 @@ public class part4 extends JFrame {
         @Override
         public void actionPerformed(ActionEvent e) {
             cards.show(cardHolder, card);
+        }
+    }
+
+    private JPanel makePart1Panel() {
+        try {
+            part1 part1 = new part1();
+            final JLabel label2 = new JLabel();
+            label2.setHorizontalAlignment(JLabel.CENTER);
+            label2.setVerticalAlignment(JLabel.CENTER);
+            label2.setSize(55, 10);
+            label2.setText("Page 2");
+
+            JPanel part1Panel = new JPanel();
+            JButton buttonNextB = new JButton("Next");
+            buttonNextB.setBounds(10, 100, 90, 20);
+            JButton buttonBackB = new JButton("Back");
+            buttonBackB.setBounds(600, 100, 90, 20);
+
+            // String[] columnLabels = {
+            // "stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station"};
+            // String[] stopColumnLabels = getColumnNames(stops);
+
+            // String[] columnLabels = { "order", "a", "b", "c", "d" };
+            part1.setupGraphFiles();
+            String[] stopColumnLabels = part1.getColumnNamesFromStops();
+            String[] columnLabels = { "order", stopColumnLabels[0], stopColumnLabels[1], stopColumnLabels[2],
+                    stopColumnLabels[6] };
+            String[][] tableData = new String[20][5];
+
+            DefaultTableModel dtm = new DefaultTableModel(tableData, columnLabels);
+            JTable table = new JTable(dtm);
+
+            JTableHeader header = table.getTableHeader();
+            String fg_color = "#ffffff";
+            String bg_color = "#000000";
+            header.setBackground(Color.decode(bg_color));
+            header.setForeground(Color.decode(fg_color));
+
+            table.setShowHorizontalLines(false);
+            table.setShowVerticalLines(true);
+            table.setGridColor(Color.decode(bg_color));
+
+            JScrollPane scrollPane = new JScrollPane(table);
+            // JScrollBar vScroll = scrollPane.getVerticalScrollBar();
+            table.setLayout(new BorderLayout());
+
+            int N_ROWS = tableData.length;
+
+            Dimension d = new Dimension(800, N_ROWS * table.getRowHeight());
+            table.setPreferredScrollableViewportSize(d);
+            TableColumn column = null;
+            // column = table.getColumnModel().getColumn(0);
+            // column.setPreferredWidth(columnLabels[0].length() * 10);
+            for (int i = 0; i < columnLabels.length; i++) {
+                column = table.getColumnModel().getColumn(i);
+                column.setPreferredWidth(columnLabels[i].length() * 10);
+            }
+
+            for (int i = 0; i < N_ROWS; i++) {
+                dtm.addRow(tableData[i]);
+            }
+
+            part1Panel.add(scrollPane, BorderLayout.CENTER);
+
+            final JLabel cost_label = new JLabel();
+            // count_label.setBounds(250, -15, 100, 20);
+            cost_label.setHorizontalAlignment(JLabel.CENTER);
+            cost_label.setVerticalAlignment(JLabel.CENTER);
+            cost_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
+
+            final JLabel path_label = new JLabel();
+            path_label.setHorizontalAlignment(JLabel.CENTER);
+            path_label.setVerticalAlignment(JLabel.CENTER);
+            path_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
+
+            JLabel error_label = new JLabel();
+            error_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
+            error_label.setForeground(Color.RED);
+            error_label.setHorizontalAlignment(JLabel.CENTER);
+            error_label.setVerticalAlignment(JLabel.CENTER);
+
+            JTextField tf1 = new JTextField(7);
+            JTextField tf2 = new JTextField(7);
+            tf1.setBounds(225, 300, 150, 20);
+            tf2.setBounds(425, 300, 150, 20);
+
+            JLabel fromLabel = new JLabel();
+            fromLabel.setText("From Stop ID");
+            fromLabel.setBounds(225, 400, 500, 20);
+            fromLabel.setHorizontalAlignment(JLabel.CENTER);
+            fromLabel.setVerticalAlignment(JLabel.CENTER);
+
+            JLabel toLabel = new JLabel();
+            toLabel.setText("Dest. Stop ID");
+            toLabel.setBounds(225, 400, 500, 20);
+            toLabel.setHorizontalAlignment(JLabel.CENTER);
+            toLabel.setVerticalAlignment(JLabel.CENTER);
+
+            JButton inputButton = new JButton("Shortest Path");
+            inputButton.setBackground(Color.BLACK);
+            inputButton.setForeground(Color.RED);
+
+            buttonNextB.addActionListener(new Switcher(cardC));
+            buttonBackB.addActionListener(new Switcher(cardA));
+            part1Panel.add(buttonNextB);
+
+            part1Panel.add(fromLabel);
+            part1Panel.add(tf1);
+            part1Panel.add(toLabel);
+            part1Panel.add(tf2);
+            part1Panel.add(inputButton);
+            part1Panel.add(buttonBackB);
+            part1Panel.add(cost_label);
+            part1Panel.add(path_label);
+            part1Panel.add(error_label);
+
+            inputButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    try {
+                        int fromStopID = Integer.parseInt(tf1.getText());
+                        int toStopID = Integer.parseInt(tf2.getText());
+
+                        if (part1.routes.isValidStopId(fromStopID) && part1.routes.isValidStopId(toStopID)) {
+                            System.out
+                                    .println("Inputs start stop - " + tf1.getText() + " dest stop - " + tf2.getText());
+                            // int fromStopID = 71;
+                            // int toStopID = 646;
+                            // printShortestPathInfo(fromStopID, toStopID);
+                            ArrayList<Integer> shortestPath = part1.routes.getShortestPath(fromStopID, toStopID);
+                            ArrayList<Stop> enrouteDetails = part1.routes.getEnrouteStops(shortestPath);
+                            String[][] tableData = new String[enrouteDetails.size()][5];
+                            double shortestCost = part1.routes.getShortestPathCost();
+
+                            if (shortestCost == Double.POSITIVE_INFINITY) {
+                                path_label.setText("No route from from " + fromStopID + " to " + toStopID);
+                            } else if (shortestCost == Double.NEGATIVE_INFINITY) {
+                                path_label.setText("both from and to have the same stop IDs");
+                            } else if (shortestCost == -1.0) {
+                                // System.out.println("Invalid input");
+                                throw new IllegalArgumentException();
+                            } else {
+
+                                for (int i = 0; i < enrouteDetails.size(); i++) {
+                                    Stop stop = enrouteDetails.get(i);
+                                    tableData[i][0] = String.valueOf(i + 1);
+                                    tableData[i][1] = (stop.stop_id == -1) ? "" : String.valueOf(stop.stop_id);
+                                    tableData[i][2] = (stop.stop_code == -1) ? "" : String.valueOf(stop.stop_code);
+                                    tableData[i][3] = stop.stop_name;
+                                    tableData[i][4] = stop.zone_id;
+                                }
+                                for (int i = 0; i < 20; i++) {
+                                    if (tableData[i].length == 0) {
+                                        tableData[i] = new String[columnLabels.length];
+                                    }
+                                }
+                                dtm.setDataVector(tableData, columnLabels);
+                                String costLabelStr = "The cost associated with moving from " + fromStopID + " to "
+                                        + toStopID + " is " + shortestCost;
+
+                                String pathStr = "";
+                                for (int i = 0; i < shortestPath.size(); i++) {
+                                    pathStr.concat(String.valueOf(shortestPath.get(i)));
+                                    // System.out.print(shortestPath.get(i));
+                                    if (i != shortestPath.size() - 1) {
+                                        pathStr.concat(" -> ");
+                                        // System.out.print(" -> ");
+                                    }
+                                }
+                                error_label.setText("");
+                                cost_label.setText(costLabelStr);
+                                // path_label.setText(pathStr);
+                                // System.out.println();
+                            }
+
+                        } else
+                            throw new IllegalArgumentException();
+
+                    } catch (NumberFormatException nfe) {
+                        String errorMsg = "Invalid input, please check the stop IDs you have entered.";
+                        // System.out.println(errorMsg);
+                        cost_label.setText("");
+                        path_label.setText("");
+                        error_label.setText(errorMsg);
+                        String[][] emptyData = new String[20][columnLabels.length];
+                        dtm.setDataVector(emptyData, columnLabels);
+                    } catch (IllegalArgumentException iae) {
+                        String errorMsg = "Invalid input, please check the stop IDs you have entered.";
+                        // System.out.println(errorMsg);
+                        cost_label.setText("");
+                        path_label.setText("");
+                        error_label.setText(errorMsg);
+                        String[][] emptyData = new String[20][columnLabels.length];
+                        dtm.setDataVector(emptyData, columnLabels);
+                    }
+                }
+            });
+
+            return part1Panel;
+        } catch (IOException ib) {
+            return null;
         }
     }
 
@@ -247,7 +451,7 @@ public class part4 extends JFrame {
 
             part3Panel.setPreferredSize(d);
             part3Panel.setMaximumSize(part3Panel.getMaximumSize());
-            JButton buttonNextD = new JButton("Next");
+            JButton buttonNextD = new JButton("Home");
             buttonNextD.setBounds(10, 100, 90, 20);
             JButton buttonBackD = new JButton("Back");
             buttonBackD.setBounds(600, 100, 90, 20);
@@ -427,170 +631,55 @@ public class part4 extends JFrame {
 
     }
 
-    private JPanel makePart1Panel() {
+    private JPanel makeIntroPanel() {
         try {
-            part1 part1 = new part1();
-            final JLabel label2 = new JLabel();
-            label2.setHorizontalAlignment(JLabel.CENTER);
-            label2.setVerticalAlignment(JLabel.CENTER);
-            label2.setSize(55, 10);
-            label2.setText("Page 2");
+            final JLabel label1 = new JLabel();
+            label1.setHorizontalAlignment(JLabel.CENTER);
+            label1.setVerticalAlignment(JLabel.CENTER);
+            // label1.setSize(55, 10);
+            // label1.setPrefferedSize(200, 40);
+            Dimension d1 = new Dimension(820, 150);
 
-            JPanel pb = new JPanel();
-            JButton buttonNextB = new JButton("Next");
-            buttonNextB.setBounds(10, 100, 90, 20);
-            JButton buttonBackB = new JButton("Back");
-            buttonBackB.setBounds(600, 100, 90, 20);
+            label1.setPreferredSize(d1);
+            label1.setText("CSU22012: Data Structures and Algorithms Group Project");
+            label1.setFont(new Font("Myriad Pro", Font.PLAIN, 25));
 
-            // String[] columnLabels = {
-            // "stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station"};
-            // String[] stopColumnLabels = getColumnNames(stops);
+            JPanel pa = new JPanel();
+            JButton buttonPartA = new JButton("Part 1");
+            JButton buttonPartB = new JButton("Part 2");
+            JButton buttonPartC = new JButton("Part 3");
 
-            // String[] columnLabels = { "order", "a", "b", "c", "d" };
-            part1.setupGraphFiles();
-            String[] stopColumnLabels = part1.getColumnNamesFromStops();
-            String[] columnLabels = { "order", stopColumnLabels[0], stopColumnLabels[1], stopColumnLabels[2],
-                    stopColumnLabels[6] };
-            String[][] tableData = new String[20][5];
+            buttonPartA.addActionListener(new Switcher(cardB));
+            buttonPartB.addActionListener(new Switcher(cardC));
+            buttonPartC.addActionListener(new Switcher(cardD));
 
-            DefaultTableModel dtm = new DefaultTableModel(tableData, columnLabels);
-            JTable table = new JTable(dtm);
+            BufferedImage myPicture = ImageIO.read(
+                    new File("/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/translinklogo1 (1).png"));
+            JLabel picLabel = new JLabel(new ImageIcon(myPicture));
+            Dimension d2 = new Dimension(820, 250);
+            picLabel.setPreferredSize(d2);
 
-            JTableHeader header = table.getTableHeader();
-            String fg_color = "#ffffff";
-            String bg_color = "#000000";
-            header.setBackground(Color.decode(bg_color));
-            header.setForeground(Color.decode(fg_color));
+            final JLabel paddingLabel1 = new JLabel();
+            paddingLabel1.setHorizontalAlignment(JLabel.CENTER);
+            paddingLabel1.setVerticalAlignment(JLabel.CENTER);
+            paddingLabel1.setText("      ");
 
-            table.setShowHorizontalLines(false);
-            table.setShowVerticalLines(true);
-            table.setGridColor(Color.decode(bg_color));
+            final JLabel paddingLabel2 = new JLabel();
+            paddingLabel2.setHorizontalAlignment(JLabel.CENTER);
+            paddingLabel2.setVerticalAlignment(JLabel.CENTER);
+            paddingLabel2.setText("      ");
 
-            JScrollPane scrollPane = new JScrollPane(table);
-            // JScrollBar vScroll = scrollPane.getVerticalScrollBar();
-            table.setLayout(new BorderLayout());
+            pa.add(label1);
+            pa.add(picLabel);
+            pa.add(buttonPartA);
+            pa.add(paddingLabel1);
+            pa.add(buttonPartB);
+            pa.add(paddingLabel2);
+            pa.add(buttonPartC);
 
-            int N_ROWS = tableData.length;
-
-            Dimension d = new Dimension(800, N_ROWS * table.getRowHeight());
-            table.setPreferredScrollableViewportSize(d);
-            TableColumn column = null;
-            // column = table.getColumnModel().getColumn(0);
-            // column.setPreferredWidth(columnLabels[0].length() * 10);
-            for (int i = 0; i < columnLabels.length; i++) {
-                column = table.getColumnModel().getColumn(i);
-                column.setPreferredWidth(columnLabels[i].length() * 10);
-            }
-
-            for (int i = 0; i < N_ROWS; i++) {
-                dtm.addRow(tableData[i]);
-            }
-
-            pb.add(scrollPane, BorderLayout.CENTER);
-
-            final JLabel cost_label = new JLabel();
-            // count_label.setBounds(250, -15, 100, 20);
-            cost_label.setHorizontalAlignment(JLabel.CENTER);
-            cost_label.setVerticalAlignment(JLabel.CENTER);
-            cost_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
-
-            JLabel error_label = new JLabel();
-            error_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
-            error_label.setForeground(Color.RED);
-            error_label.setHorizontalAlignment(JLabel.CENTER);
-            error_label.setVerticalAlignment(JLabel.CENTER);
-
-            JTextField tf1 = new JTextField(7);
-            JTextField tf2 = new JTextField(7);
-            tf1.setBounds(225, 300, 150, 20);
-            tf2.setBounds(425, 300, 150, 20);
-
-            JLabel fromLabel = new JLabel();
-            fromLabel.setText("From Stop ID");
-            fromLabel.setBounds(225, 400, 500, 20);
-            fromLabel.setHorizontalAlignment(JLabel.CENTER);
-            fromLabel.setVerticalAlignment(JLabel.CENTER);
-
-            JLabel toLabel = new JLabel();
-            toLabel.setText("Dest. Stop ID");
-            toLabel.setBounds(225, 400, 500, 20);
-            toLabel.setHorizontalAlignment(JLabel.CENTER);
-            toLabel.setVerticalAlignment(JLabel.CENTER);
-
-            JButton inputButton = new JButton("Shortest Path");
-            inputButton.setBackground(Color.BLACK);
-            inputButton.setForeground(Color.RED);
-
-            buttonNextB.addActionListener(new Switcher(cardC));
-            buttonBackB.addActionListener(new Switcher(cardA));
-            pb.add(buttonNextB);
-
-            pb.add(fromLabel);
-            pb.add(tf1);
-            pb.add(toLabel);
-            pb.add(tf2);
-            pb.add(inputButton);
-            pb.add(buttonBackB);
-            pb.add(cost_label);
-            pb.add(error_label);
-
-            inputButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        int fromStopID = Integer.parseInt(tf1.getText());
-                        int toStopID = Integer.parseInt(tf2.getText());
-
-                        if (part1.routes.isValidStopId(fromStopID) && part1.routes.isValidStopId(toStopID)) {
-                            System.out.println("Inputs start stop - " + tf1.getText() + " dest stop - " + tf2.getText());
-                            // int fromStopID = 71;
-                            // int toStopID = 646;
-                            // printShortestPathInfo(fromStopID, toStopID);
-                            ArrayList<Integer> shortestPath = part1.routes.getShortestPath(fromStopID, toStopID);
-                            ArrayList<Stop> enrouteDetails = part1.routes.getEnrouteStops(shortestPath);
-                            String[][] tableData = new String[enrouteDetails.size()][5];
-                            double shortestCost = part1.routes.getShortestPathCost();
-                            for (int i = 0; i < enrouteDetails.size(); i++) {
-                                Stop stop = enrouteDetails.get(i);
-                                tableData[i][0] = String.valueOf(i + 1);
-                                tableData[i][1] = (stop.stop_id == -1) ? "" : String.valueOf(stop.stop_id);
-                                tableData[i][2] = (stop.stop_code == -1) ? "" : String.valueOf(stop.stop_code);
-                                tableData[i][3] = stop.stop_name;
-                                tableData[i][4] = stop.zone_id;
-                            }
-                            for(int i = 0; i <20;i++){
-                                if(tableData[i].length==0){
-                                    tableData[i] = new String[columnLabels.length];
-                                }
-                            }
-                            dtm.setDataVector(tableData, columnLabels);
-                            String costLabelStr = "The cost associated with moving from " + fromStopID + " to "
-                                    + toStopID + " is " + shortestCost;
-                            error_label.setText("");
-                            cost_label.setText(costLabelStr);
-                        } else
-                            throw new IllegalArgumentException();
-
-                    } catch (NumberFormatException nfe) {
-                        String errorMsg = "Please enter a valid stop id";
-                        // System.out.println(errorMsg);
-                        cost_label.setText("");
-                        error_label.setText(errorMsg);
-                        String[][] emptyData = new String[20][columnLabels.length];
-                        dtm.setDataVector(emptyData, columnLabels);
-                    } catch (IllegalArgumentException iae) {
-                        String errorMsg = "No stop with the input value";
-                        // System.out.println(errorMsg);
-                        cost_label.setText("");
-                        error_label.setText(errorMsg);
-                        String[][] emptyData = new String[20][columnLabels.length];
-                        dtm.setDataVector(emptyData, columnLabels);
-                    }
-
-                }
-            });
-
-            return pb;
-        } catch (IOException ib) {
+            // pa.setBackground(Color.CYAN);
+            return pa;
+        } catch (IOException ioe) {
             return null;
         }
     }
@@ -598,26 +687,10 @@ public class part4 extends JFrame {
     private void run() {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-        final JLabel label1 = new JLabel();
-        label1.setHorizontalAlignment(JLabel.CENTER);
-        label1.setVerticalAlignment(JLabel.CENTER);
-        label1.setSize(55, 10);
-        label1.setText("Page 1");
-
-        JPanel pa = new JPanel();
-        JButton buttonNextA = new JButton("Next");
-        buttonNextA.setBounds(10, 100, 90, 20);
-        JButton buttonBackA = new JButton("Back");
-        buttonBackA.setBounds(600, 100, 90, 20);
-
-        buttonNextA.addActionListener(new Switcher(cardB));
-        buttonBackA.addActionListener(new Switcher(cardD));
-        pa.add(buttonNextA);
-        pa.add(buttonBackA);
-        pa.add(label1);
-        pa.setBackground(Color.CYAN);
         // pa.setLayout(null);
         // pa.setSize(820, 600);
+
+        JPanel pa = makeIntroPanel();
 
         JPanel pb = makePart1Panel();
 
