@@ -9,6 +9,16 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableColumn;
+import javax.swing.table.TableColumnModel;
+import javax.xml.crypto.Data;
+
+import java.awt.event.*;
+import java.awt.*;
+
 public class part1 {
 
     // * Finding shortest paths between 2 bus stops (as input by the user),
@@ -30,17 +40,17 @@ public class part1 {
     // * and for transfer type 2 the cost is the minimum transfer time divided by
     // 100.
 
-    // public static String[] getColumnNames(File filename) throws IOException {
-    // BufferedReader br = new BufferedReader(new FileReader(filename));
-    // String st;
-    // while ((st = br.readLine()) != null) {
-    // String[] line = st.split(",");
-    // br.close();
-    // return line;
-    // }
-    // br.close();
-    // return null;
-    // }
+    public static String[] getColumnNames(File filename) throws IOException {
+        BufferedReader br = new BufferedReader(new FileReader(filename));
+        String st;
+        while ((st = br.readLine()) != null) {
+            String[] line = st.split(",");
+            br.close();
+            return line;
+        }
+        br.close();
+        return null;
+    }
 
     // // prints the lines with a parent station name
     // public static void printIfParent(File filename) throws IOException {
@@ -159,9 +169,9 @@ public class part1 {
         } else {
             System.out.println("Cost from " + fromStopID + " to " + toStopID + " is: " + shortestCost);
             ArrayList<Stop> details = routes.getEnrouteStops(shortestPath);
-            for(int i = 0; i < shortestPath.size();i++){
+            for (int i = 0; i < shortestPath.size(); i++) {
                 System.out.print(shortestPath.get(i));
-                if(i != shortestPath.size() - 1){
+                if (i != shortestPath.size() - 1) {
                     System.out.print(" -> ");
                 }
             }
@@ -169,7 +179,7 @@ public class part1 {
         }
     }
 
-    public static void main(String[] args) throws IOException {
+    public static void part1GUI() throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
         File stop_times = new File(stops_times_path);
 
@@ -181,9 +191,185 @@ public class part1 {
 
         setupGraph(stops, stop_times, transfers);
 
-        int fromStopID = 71;
-        int toStopID = 646;
-        printShortestPathInfo(fromStopID, toStopID);
+        JFrame f = new JFrame("PART 1 GUI");
 
+        // String[] columnLabels = { "stop_id","stop_code","stop_name","stop_desc","stop_lat","stop_lon","zone_id","stop_url","location_type","parent_station"};
+        String[] stopColumnLabels = getColumnNames(stops);
+        String[] columnLabels = {"order",stopColumnLabels[0],stopColumnLabels[1],stopColumnLabels[2],stopColumnLabels[6]};
+        
+        String[][] tableData = new String[10][5];
+
+        DefaultTableModel dtm = new DefaultTableModel(tableData, columnLabels);
+        JTable table = new JTable(dtm);
+
+        JTableHeader header = table.getTableHeader();
+        String fg_color = "#ffffff";
+        String bg_color = "#000000";
+        header.setBackground(Color.decode(bg_color));
+        header.setForeground(Color.decode(fg_color));
+
+        table.setShowHorizontalLines(false);
+        table.setShowVerticalLines(true);
+        table.setGridColor(Color.decode(bg_color));
+
+        JScrollPane scrollPane = new JScrollPane(table);
+        // JScrollBar vScroll = scrollPane.getVerticalScrollBar();
+        table.setLayout(new BorderLayout());
+
+        int N_ROWS = tableData.length;
+
+        Dimension d = new Dimension(800, N_ROWS * table.getRowHeight());
+        table.setPreferredScrollableViewportSize(d);
+        TableColumn column = null;
+        // column = table.getColumnModel().getColumn(0);
+        // column.setPreferredWidth(columnLabels[0].length() * 10);
+        for (int i = 0; i < columnLabels.length; i++) {
+            column = table.getColumnModel().getColumn(i);
+            column.setPreferredWidth(columnLabels[i].length() * 10);
+        }
+
+        for (int i = 0; i < N_ROWS; i++) {
+            dtm.addRow(tableData[i]);
+        }
+
+        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        f.add(scrollPane, BorderLayout.CENTER);
+        f.pack();
+        f.setLocationRelativeTo(null);
+
+        JTextField tf1 = new JTextField();
+        tf1.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent fe) {
+                if (tf1.getText().equals("Start Stop ID")) {
+                    tf1.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent fe) {
+                if (tf1.getText().isEmpty()) {
+                    tf1.setText("Start Stop ID");
+                }
+            }
+        });
+        JTextField tf2 = new JTextField();
+
+        tf2.addFocusListener(new FocusListener() {
+
+            @Override
+            public void focusGained(FocusEvent fe) {
+                if (tf2.getText().equals("Dest Stop ID")) {
+                    tf2.setText("");
+                }
+            }
+
+            @Override
+            public void focusLost(FocusEvent fe) {
+                if (tf2.getText().isEmpty()) {
+                    tf2.setText("Dest Stop ID");
+                }
+            }
+        });
+
+        tf1.setBounds(225, 300, 150, 20);
+        tf2.setBounds(425, 300, 150, 20);
+        JButton b = new JButton("Show");
+        b.setBounds(625, 300, 90, 20);
+
+        JLabel costLabel = new JLabel();
+        costLabel.setBounds(225, 400, 500, 20);
+        costLabel.setHorizontalAlignment(JLabel.CENTER);
+        costLabel.setVerticalAlignment(JLabel.CENTER);
+
+        JLabel pathLabel = new JLabel();
+        pathLabel.setHorizontalAlignment(JLabel.CENTER);
+        pathLabel.setVerticalAlignment(JLabel.CENTER);
+
+        JLabel errorLabel = new JLabel();
+        errorLabel.setBounds(225, 500, 500, 20);
+        errorLabel.setHorizontalAlignment(JLabel.CENTER);
+        errorLabel.setVerticalAlignment(JLabel.CENTER);
+
+        f.add(tf1);
+        f.add(tf2);
+        f.add(b);
+        f.add(costLabel);
+        f.add(errorLabel);
+
+        f.setLayout(null);
+        f.setSize(820, 600);
+        f.setVisible(true);
+
+        b.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    int fromStopID = Integer.parseInt(tf1.getText());
+                    int toStopID = Integer.parseInt(tf2.getText());
+
+                    if (routes.isValidStopId(fromStopID) && routes.isValidStopId(toStopID)) {
+                        System.out.println("Inputs start stop - " + tf1.getText() + " dest stop - " + tf2.getText());
+                        // int fromStopID = 71;
+                        // int toStopID = 646;
+                        printShortestPathInfo(fromStopID, toStopID);
+                        double shortestCost = routes.getShortestPathCost();
+                        ArrayList<Integer> shortestPath = routes.getShortestPath(fromStopID, toStopID);
+                        ArrayList<Stop> enrouteDetails = routes.getEnrouteStops(shortestPath);
+                        String[][] tableData = new String[enrouteDetails.size()][5];
+                        for (int i = 0; i < enrouteDetails.size(); i++) {
+                            Stop stop = enrouteDetails.get(i);
+                            tableData[i][0] = String.valueOf(i+1);
+                            tableData[i][1] = String.valueOf(stop.stop_id);
+                            tableData[i][2] = String.valueOf(stop.stop_code);
+                            tableData[i][3] = stop.stop_name;
+                            tableData[i][4] = stop.zone_id;
+                        }
+                        dtm.setDataVector(tableData, columnLabels);
+                        String costLabelStr = "The cost associated with moving from " + fromStopID + " to " + toStopID
+                                + " is " + shortestCost;
+                        costLabel.setText(costLabelStr);
+                    } else
+                        throw new IllegalArgumentException();
+
+                } catch (NumberFormatException nfe) {
+                    String errorMsg = "Please enter a number";
+                    System.out.println(errorMsg);
+                    errorLabel.setText(errorMsg);
+                    String[][] emptyData = new String[10][columnLabels.length];
+                    dtm.setDataVector(emptyData, columnLabels);
+                } catch (IllegalArgumentException iae) {
+                    String errorMsg = "No stop with the input value";
+                    System.out.println(errorMsg);
+                    errorLabel.setText(errorMsg);
+                    String[][] emptyData = new String[10][columnLabels.length];
+                    dtm.setDataVector(emptyData, columnLabels);
+                }
+
+            }
+        });
+
+    }
+
+    public static void main(String[] args) throws IOException {
+        // String stops_times_path = "/Users/johnwesley/Desktop/Algos
+        // /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+        // File stop_times = new File(stops_times_path);
+
+        // String stops_path = "/Users/johnwesley/Desktop/Algos
+        // /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+        // File stops = new File(stops_path);
+
+        // String transfers_path = "/Users/johnwesley/Desktop/Algos
+        // /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
+        // File transfers = new File(transfers_path);
+
+        // setupGraph(stops, stop_times, transfers);
+
+        // int fromStopID = 71;
+        // int toStopID = 646;
+        // printShortestPathInfo(fromStopID, toStopID);
+        part1GUI();
     }
 }

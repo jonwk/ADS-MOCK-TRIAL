@@ -47,6 +47,12 @@ public class part2 {
         return null;
     }
 
+    public static String[] getColumnNamesFromStopTimes() throws IOException {
+        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+        File stops = new File(stops_path);
+        return getColumnNames(stops);
+    }
+
     // In order for this to provide meaningful search functionality please move
     // keywords flagstop, wb, nb, sb, eb from start of the names to the end of the
     // names of the stops when reading the file into a TST (eg “WB HASTINGS ST FS
@@ -131,6 +137,14 @@ public class part2 {
         return Time_Line;
     }
 
+    public static Map<String, ArrayList<String[]>> createNameDetailsMapFromStops() throws IOException {
+        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+        File stops = new File(stops_path);
+        return createNameDetailsMap(stops);
+    }
+
+
+
     public static void insertStopNamesToTST(ArrayList<String> stopNames) {
         for (String stopName : stopNames) {
             STOP_NAMES_TST.insert(stopName);
@@ -146,7 +160,7 @@ public class part2 {
 
         // printDuplicateStations(stopNames);
         insertStopNamesToTST(stopNames);
-        Map<String, ArrayList<String[]>> stopDetails = createNameDetailsMap(stops);
+        Map<String, ArrayList<String[]>> stopDetails = createNameDetailsMapFromStops();
 
         JFrame f = new JFrame("PART 2 GUI");
 
