@@ -40,6 +40,15 @@ public class part1 {
     // * and for transfer type 2 the cost is the minimum transfer time divided by
     // 100.
 
+    public static File STOPS;
+    public static File STOP_TIMES;
+    public static File TRANSFERS;
+    public part1(String stopsPath, String stopTimesPath, String transfersPath){
+        STOPS = new File(stopsPath);
+        STOP_TIMES = new File(stopTimesPath);
+        TRANSFERS = new File(transfersPath);
+    }
+
     public static String[] getColumnNames(File filename) throws IOException {
         BufferedReader br = new BufferedReader(new FileReader(filename));
         String st;
@@ -53,93 +62,8 @@ public class part1 {
     }
 
     public static String[] getColumnNamesFromStops() throws IOException {
-        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
-        File stops = new File(stops_path);
-        return getColumnNames(stops);
+        return getColumnNames(STOPS);
     }
-
-    // // prints the lines with a parent station name
-    // public static void printIfParent(File filename) throws IOException {
-    // BufferedReader br = new BufferedReader(new FileReader(filename));
-    // String st;
-    // while ((st = br.readLine()) != null) {
-    // String[] line = st.split(",");
-    // if (line.length == 10) {
-    // System.out.println(Arrays.toString(line));
-    // }
-    // }
-    // br.close();
-    // }
-
-    // // to check if any of the data hsa stop url
-    // // spoiler there are none
-    // public static void printIfURL(File filename) throws IOException {
-    // BufferedReader br = new BufferedReader(new FileReader(filename));
-    // String st;
-    // // int count = 0;
-    // while ((st = br.readLine()) != null) {
-    // String[] line = st.split(",");
-    // if (!line[7].equals(" ")) {
-    // // if(line[7].equals(" ")){
-    // // System.out.println(line[7]);
-    // System.out.println(Arrays.toString(line));
-    // // count++;
-    // }
-    // }
-    // // System.out.println("lines without stop url are "+count);
-    // br.close();
-    // }
-
-    // public static Map<String, ArrayList<String[]>> makeStringMap(File filename,
-    // int keyIndex) throws IOException {
-    // Map<String, ArrayList<String[]>> map = new HashMap<String,
-    // ArrayList<String[]>>();
-
-    // BufferedReader br = new BufferedReader(new FileReader(filename));
-    // String st;
-    // ArrayList<String[]> lineList = new ArrayList<String[]>();
-    // int lineCount = 0;
-    // while ((st = br.readLine()) != null) {
-    // String[] line = st.split(",");
-    // if (lineCount != 0) {
-    // lineList.add(line);
-    // }
-    // lineCount++;
-
-    // }
-    // br.close();
-
-    // for (int i = 0; i < lineList.size(); i++) {
-    // String[] line = lineList.get(i);
-    // String keyStr = line[keyIndex];
-
-    // map.computeIfAbsent(keyStr, k -> new ArrayList<>()).add(line);
-    // }
-
-    // return map;
-    // }
-
-    // public static Map<String, ArrayList<String[]>> StopIdTripIdMap; // key is
-    // trip ID
-
-    // public static void makeEdgeMaps() throws IOException {
-    // String transfers_path = "/Users/johnwesley/Desktop/Algos
-    // /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
-    // File transfers = new File(transfers_path);
-    // int fromStopIdIndex = 0;
-    // transfersMap = makeStringMap(transfers, fromStopIdIndex);
-
-    // String stops_times_path = "/Users/johnwesley/Desktop/Algos
-    // /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
-    // File stop_times = new File(stops_times_path);
-    // // makeStringMap(File filename, Map<String, ArrayList<String[]>> map, int
-    // // keyIndex) throws IOException {
-    // int tripIdIndex = 0;
-    // TripIDMap = makeStringMap(stop_times, tripIdIndex);
-
-    // int stopIdIndex = 3;
-    // StopIdTripIdMap = makeStringMap(stop_times, stopIdIndex);
-    // }
 
     public static StopConnections routes;
     public static Trips trips;
@@ -162,16 +86,16 @@ public class part1 {
     }
 
     public void setupGraphFiles() throws IOException {
-        String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
-        File stop_times = new File(stops_times_path);
+        // String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+        // File stop_times = new File(stops_times_path);
 
-        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
-        File stops = new File(stops_path);
+        // String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+        // File stops = new File(stops_path);
 
-        String transfers_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
-        File transfers = new File(transfers_path);
+        // String transfers_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
+        // File transfers = new File(transfers_path);
 
-        setupGraph(stops, stop_times, transfers);
+        setupGraph(STOPS, STOP_TIMES, TRANSFERS);
     }
 
     public static void printShortestPathInfo(int fromStopID, int toStopID) {

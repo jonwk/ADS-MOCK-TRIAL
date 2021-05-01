@@ -27,11 +27,13 @@ public class part2 {
 
     public static TernarySearchTree STOP_NAMES_TST = new TernarySearchTree();
 
-    public part2() throws IOException {
-        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
-        File stops = new File(stops_path);
+    public static File STOPS;
 
-        ArrayList<String> stopNames = getStopNames(stops);
+
+    public part2(String stopsPath)throws IOException {
+        STOPS = new File(stopsPath);
+
+        ArrayList<String> stopNames = getStopNames(STOPS);
         insertStopNamesToTST(stopNames);
     }
 
@@ -48,9 +50,7 @@ public class part2 {
     }
 
     public static String[] getColumnNamesFromStopTimes() throws IOException {
-        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
-        File stops = new File(stops_path);
-        return getColumnNames(stops);
+        return getColumnNames(STOPS);
     }
 
     // In order for this to provide meaningful search functionality please move
@@ -138,9 +138,7 @@ public class part2 {
     }
 
     public static Map<String, ArrayList<String[]>> createNameDetailsMapFromStops() throws IOException {
-        String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
-        File stops = new File(stops_path);
-        return createNameDetailsMap(stops);
+        return createNameDetailsMap(STOPS);
     }
 
 

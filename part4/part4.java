@@ -26,6 +26,24 @@ public class part4 extends JFrame {
     private static final String cardD = "D";
     private static Dimension d = new Dimension(820, 600);
 
+    private static String STOPS_PATH = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
+    private static String STOP_TIMES_PATH = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
+    private static String TRANSFERS_PATH = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/transfers.txt";
+
+    // private static part1 part1 = new part1(STOPS_PATH, STOP_TIMES_PATH,
+    // TRANSFERS_PATH);
+    // private static part2 part2 = new part2(STOPS_PATH);
+
+    private static part1 part1;
+    private static part2 part2;
+    private static part3 part3;
+
+    public static void initParts() throws IOException {
+        part1 = new part1(STOPS_PATH, STOP_TIMES_PATH, TRANSFERS_PATH);
+        part2 = new part2(STOPS_PATH);
+        part3 = new part3(STOP_TIMES_PATH);
+    }
+
     private class Switcher implements ActionListener {
         String card;
 
@@ -41,7 +59,7 @@ public class part4 extends JFrame {
 
     private JPanel makePart1Panel() {
         try {
-            part1 part1 = new part1();
+            // part1 part1 = new part1();
             final JLabel label2 = new JLabel();
             label2.setHorizontalAlignment(JLabel.CENTER);
             label2.setVerticalAlignment(JLabel.CENTER);
@@ -241,7 +259,7 @@ public class part4 extends JFrame {
 
     private JPanel makePart2Panel() {
         try {
-            part2 part2 = new part2();
+            // partpart2 = new part2(STOPS_PATH);
             Map<String, ArrayList<String[]>> stopDetails = part2.createNameDetailsMapFromStops();
 
             JPanel part2Panel = new JPanel();
@@ -381,8 +399,8 @@ public class part4 extends JFrame {
                                     lines.add(d);
                                 }
                             }
-                            // lines =
-                            // printTripDetailsFromList(lines);
+                            if (lines.size() == 0)
+                                throw new NullPointerException();
                             String[][] stopsData;
                             stopsData = new String[lines.size()][columnLabels.length];
                             for (int i = 0; i < stopsData.length; i++) {
@@ -420,13 +438,6 @@ public class part4 extends JFrame {
 
             part2Panel.add(buttonNextC);
 
-            // pc.add(hoursLabel);
-            // pc.add(hoursInput);
-
-            // pc.add(minutesLabel);
-            // pc.add(minutesInput);
-
-            // pc.add(secondsLabel);
             part2Panel.add(tf1);
 
             part2Panel.add(inputButton);
@@ -444,8 +455,7 @@ public class part4 extends JFrame {
 
     private JPanel makePart3Panel() {
         try {
-            part3 part3 = new part3();
-            // part3.Part_3_GUI();
+
             Map<String, ArrayList<String>> arrivalTimes_String = part3.createSortedArrivalTimeMapFromStopTimes();
             JPanel part3Panel = new JPanel();
 
@@ -518,7 +528,6 @@ public class part4 extends JFrame {
             table.setGridColor(Color.decode(bg_color));
 
             JScrollPane scrollPane = new JScrollPane(table);
-            // JScrollBar vScroll = scrollPane.getVerticalScrollBar();
             table.setLayout(new BorderLayout());
 
             int N_ROWS = tableData.length;
@@ -539,14 +548,10 @@ public class part4 extends JFrame {
             final JLabel label = new JLabel();
             label.setHorizontalAlignment(JLabel.CENTER);
             label.setVerticalAlignment(JLabel.CENTER);
-            // label.crossVerticalAlignment(JLabel.CENTER);s
-            // label.setBounds(300, -35, 100, 20);
 
             label.setSize(table.getWidth(), table.getHeight() * 135 / 100);
-            // f.add(label,BorderLayout.CENTER);
 
             final JLabel count_label = new JLabel();
-            // count_label.setBounds(250, -15, 100, 20);
             count_label.setHorizontalAlignment(JLabel.CENTER);
             count_label.setVerticalAlignment(JLabel.CENTER);
             count_label.setSize(table.getWidth(), table.getHeight() * 160 / 100);
@@ -718,6 +723,7 @@ public class part4 extends JFrame {
 
     public static void main(String[] args) {
         try {
+            initParts();
             SwingUtilities.invokeAndWait(new Runnable() {
                 @Override
                 public void run() {

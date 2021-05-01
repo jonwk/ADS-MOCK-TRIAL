@@ -28,8 +28,10 @@ public class part3 {
     // /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
     // public static File stop_times = new File(stops_times_path);
 
-    public part3() {
+    public static File STOP_TIMES;
 
+    public part3(String stopTimesPath) throws IOException {
+        STOP_TIMES = new File(stopTimesPath);
     };
 
     public static String[] getColumnNames(File filename) throws IOException {
@@ -45,9 +47,7 @@ public class part3 {
     }
 
     public static String[] getColumnNamesFromStopTimes() throws IOException {
-        String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
-        File stop_times = new File(stops_times_path);
-        return getColumnNames(stop_times);
+        return getColumnNames(STOP_TIMES);
     }
 
     public static int getLinesCount(File filename) throws IOException {
@@ -122,7 +122,7 @@ public class part3 {
         return validTimes;
     }
 
-    public static  ArrayList<String> getValidTimesFromStopTimes()throws IOException {
+    public static ArrayList<String> getValidTimesFromStopTimes() throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
         File stop_times = new File(stops_times_path);
         return getValidTimes(stop_times);
@@ -201,8 +201,6 @@ public class part3 {
         }
         return tripsData;
     }
-
-
 
     public static void Part_3_GUI() throws IOException {
         String stops_times_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stop_times.txt";
