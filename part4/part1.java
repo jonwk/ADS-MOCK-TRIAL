@@ -52,7 +52,7 @@ public class part1 {
         return null;
     }
 
-    public static String[] getColumnNamesFromStops()throws IOException {
+    public static String[] getColumnNamesFromStops() throws IOException {
         String stops_path = "/Users/johnwesley/Desktop/Algos /Sem2/ADS-MOCK-TRIAL/inputs/stops.txt";
         File stops = new File(stops_path);
         return getColumnNames(stops);
